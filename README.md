@@ -1,54 +1,96 @@
 # Wardrobe
 
-A local-first **fashion archive** for clothes you own. Upload a photo, confirm
-the item's details, browse your closet, compose an outfit on a faceless mannequin,
-and save looks to an editorial board.
+A local-first digital wardrobe for clothes you own. Upload a photo, confirm its
+metadata, browse your closet, compose an outfit on a faceless mannequin, and save
+looks to an editorial board.
 
-The default experience is a browser-only archive with a **2.5D layered styling
-preview** and local demo metadata suggestions. Optional serverless image-analysis
-and product-reference integrations, plus an experimental FastAPI proxy-3D lab,
-are implemented as separate, opt-in paths.
+The default app runs in your browser with local storage, deterministic demo
+suggestions, and a **2.5D layered styling preview**. It needs no account, cloud
+credentials, or backend. Optional vision/product-reference services and the local
+Proxy 3D Lab are separate opt-in paths.
 
 [Architecture](docs/ARCHITECTURE.md) · [Feature scope](docs/PROJECT_SCOPE.md) ·
-[Automated checks](https://github.com/EdwardH-jedi/wadrobe/actions/workflows/ci.yml)
+[CI](https://github.com/EdwardH-jedi/wardrobe/actions/workflows/ci.yml) ·
+[Manual QA](docs/QA_CHECKLIST.md)
 
-## Try the local archive
+## Quick start
 
 Use Node.js 22 and the committed npm lockfile:
 
 ```bash
+git clone https://github.com/EdwardH-jedi/wardrobe.git
+cd wardrobe
 npm ci
 npm run dev
 # Open http://localhost:5173
 ```
 
-Click **Load sample** to explore the closet without uploading a photo, or
-**Upload** an item, confirm its metadata, compose a look, and save it to the board.
-The default archive needs no cloud credentials. The sample set is demo content.
+Click **Load sample** to explore with demo garments, or **Upload** a photo,
+confirm the suggested details, style an outfit, and save it to the board.
+No environment configuration is needed for this local flow.
 
-## Implemented modes
+## Features and current scope
 
-| Mode | What it does | Requirements and limits |
+| Mode | Implemented behavior | Requirements and limits |
 |---|---|---|
-| Local archive (default) | Clothing photos, editable purchase metadata, outfit composition, saved looks | IndexedDB with localStorage and non-persistent memory fallbacks; metadata suggestions are deterministic mocks |
-| Local asset preparation | Manual crop and opt-in background cutout | Edge-seeded flood fill, not ML segmentation; difficult backgrounds can fail |
-| Optional vision | Sends a thumbnail to a serverless provider for draft category, color, and tags | `VITE_API_BASE` plus `VITE_ANALYZER=vision`, server credentials, and the upload consent flow; user confirms the draft; errors fall back to the mock |
-| Optional product references | Reads product-page metadata; optional shopping candidate search | Configured serverless routes; eBay search additionally requires `VITE_CANDIDATES=search` and server credentials; candidates require user approval |
-| Proxy 3D Lab | Front/back PNGs to a textured GLB preview, with cutout and alignment controls | Local FastAPI service and lazy-loaded Three.js; an extruded silhouette or flat plane, not reconstructed clothing |
+| Local archive, default | Clothing photos, editable purchase metadata, closet browsing, outfit composition, saved looks | Browser persistence; metadata and reference suggestions are deterministic mocks |
+| Local image preparation | Manual crop and opt-in background cutout | Edge-seeded flood fill, not ML segmentation; difficult backgrounds can fail |
+| Optional vision | Sends a thumbnail for draft category, color, and tags | Serverless deployment, provider credentials, explicit configuration and upload consent; user confirms the draft; failures fall back to a labeled mock |
+| Optional product references | Product-page metadata lookup and optional eBay candidate search | Configured serverless routes; search needs separate credentials and opt-in; candidates require user approval |
+| Proxy 3D Lab | Front/back PNGs to a textured GLB preview, with cutout and alignment controls | Local FastAPI service and lazy-loaded Three.js; extruded silhouette or flat plane |
 
-**Proxy 3D is not virtual try-on, cloth simulation, or accurate body fitting.**
-Provider integration code is present; passing local tests does not establish live
-provider availability or recognition accuracy.
+**Proxy 3D is not virtual try-on, cloth simulation, garment reconstruction, or
+accurate body fitting.** Provider code is present, but local checks do not establish
+live provider availability or recognition accuracy.
+
+## Architecture and storage
+
+React 18 + TypeScript + Vite handle the UI. A pure domain reducer manages archive
+state; the provider layer performs storage and network I/O. CSS design tokens
+support the studio, closet, and saved-look views. The experimental 3D viewer is
+loaded separately from normal closet startup.
+
+The core flow is:
+
+```text
+photo → local image preparation → draft details → user confirmation
+      → closet → outfit composition → saved look
+```
+
+Metadata uses IndexedDB → localStorage → memory fallback. Memory storage is
+non-persistent. Cropped/cutout image blobs use a separate IndexedDB store when
+available, with downscaled thumbnails as a fallback. A conservative orphan sweep
+protects recently written and referenced blobs.
+
+Full-resolution archival, atomic metadata/blob writes, and complete multi-tab
+coordination remain limitations. Browser storage is not a cloud backup.
 
 ## Optional services
 
-The serverless handlers live in `api/`. See [.env.example](.env.example) for the
-frontend opt-ins and server-only credentials. `npm run dev` serves the Vite app;
-it does **not** execute the serverless handlers. Product-reference and vision
-requests require those handlers to be served separately or deployed. The FastAPI
-service below handles proxy 3D, not those serverless routes.
+### Vision and product references
 
-To run the local proxy-3D backend, in a second terminal:
+The TypeScript handlers in `api/` are separate from the Vite dev server. See
+[.env.example](.env.example) for configuration:
+
+- `VITE_API_BASE` points to the separately served or deployed serverless handlers
+- `VITE_ANALYZER=vision` also opts into thumbnail analysis; the upload flow asks
+  for consent before sending the image
+- `VITE_CANDIDATES=search` also opts into live shopping candidates
+- `ANTHROPIC_API_KEY` and optional `ANALYZE_MODEL` configure vision on the server
+- `EBAY_CLIENT_ID` and `EBAY_CLIENT_SECRET` configure eBay search on the server
+
+Keep provider credentials server-side, without a `VITE_` prefix, and never commit
+them. Provider usage can incur charges. Leaving the frontend opt-ins unset keeps
+the local mock experience. An unavailable vision service falls back to a mock
+with its provenance preserved.
+
+`npm run dev` does **not** execute the serverless handlers. Product-reference and
+vision requests need those routes served separately or deployed; the FastAPI
+service below handles proxy 3D, not these routes.
+
+### Local Proxy 3D Lab
+
+In a second terminal, use Python 3.12, matching the backend CI environment:
 
 ```bash
 cd backend
@@ -58,47 +100,50 @@ pip install -r requirements.txt
 python -m uvicorn app.main:app --port 8000
 ```
 
-Vite forwards `/api` requests to `http://127.0.0.1:8000` for the local lab.
-Windows instructions and the GLB API contract are in [backend/README.md](backend/README.md).
+Vite forwards `/api` requests to `http://127.0.0.1:8000` for the local lab. The
+backend uses FastAPI, Pillow, trimesh, and pygltflib. Windows setup, PNG input
+requirements, GLB endpoints, and result storage are documented in
+[backend/README.md](backend/README.md).
 
-## Verification
+## Development and checks
 
 ```bash
 npm run typecheck
 npm run lint
 npm test
 npm run build
+# Optional interactive test runner:
+npm run test:watch
 # From backend/ with its virtual environment active:
 python -m pytest -q
 ```
 
-CI runs the frontend checks and a separate Python backend test job, without
-production credentials. Frontend unit/component tests exercise `src/`; `api/`
-handlers are also typechecked, but live vision, shopping, and deployed serverless
-behavior need separate integration verification. Inspect the workflow run for
-the exact commit being reviewed.
+CI is configured to run the frontend checks and a separate Python backend test
+job without production credentials. Frontend unit/component tests cover `src/`;
+`api/` handlers are also typechecked. Live vision, shopping, and deployed
+serverless behavior need separate integration verification. Check the workflow
+run for the exact commit under review.
 
-## Stack and storage
+## Repository map
 
-- **Frontend:** React 18, TypeScript, Vite, CSS design tokens, Vitest and Testing Library.
-- **3D lab:** dynamically imported Three.js; FastAPI, Pillow, trimesh, and pygltflib.
-- **Optional serverless layer:** TypeScript handlers for analysis and product references.
+| Path | Purpose |
+|---|---|
+| `src/domain/` | Garment/outfit types, pure rules, layout, and provenance |
+| `src/app/providers/` | Reducer, archive state, persistence, and I/O coordination |
+| `src/components/` | Closet, outfit, studio, UI, and optional avatar lab views |
+| `src/lib/` | Storage adapters, image preparation, analyzer and reference integrations |
+| `src/styles/` | Shared design tokens and app styles |
+| `api/` | Optional serverless vision and product-reference handlers |
+| `backend/` | Local FastAPI proxy-3D experiments and Python tests |
+| `docs/` | Architecture, scope, image pipeline, avatar track, and QA notes |
 
-Metadata uses IndexedDB → localStorage → memory fallback. Memory storage is
-non-persistent. Cropped/cutout image blobs use a separate IndexedDB store when
-available; the downscaled thumbnail is retained as a fallback. A conservative
-orphan sweep protects recently written and referenced blobs. Full-resolution
-archival, atomic metadata/blob writes, and complete multi-tab coordination remain
-limitations; the archive is not a cloud backup.
+## Further reading
 
-## Engineering decisions
+- [Image pipeline](docs/AI_IMAGE_PIPELINE.md)
+- [Avatar track and limitations](docs/AVATAR_TRACK.md)
+- [Implementation plan](PLAN.md)
+- [Manual QA checklist](docs/QA_CHECKLIST.md)
 
-- Keep local use independent of provider availability; failed AI suggestions retain
-  their mock provenance instead of being presented as real recognition.
-- Keep a pure domain reducer and perform storage/network I/O in the provider layer.
-- Preserve the user's chosen image and metadata source across edits and reloads.
-- Isolate the experimental 3D path from the normal closet startup.
-
-Further detail: [image pipeline](docs/AI_IMAGE_PIPELINE.md),
-[avatar track](docs/AVATAR_TRACK.md), [implementation plan](PLAN.md), and
-[manual QA checklist](docs/QA_CHECKLIST.md).
+The project contains experimental and historical phase notes. Treat future items
+in those plans as roadmap work, and use the implementation and checks when
+assessing a feature's current behavior.
