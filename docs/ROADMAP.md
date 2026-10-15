@@ -8,7 +8,7 @@ dark editorial UI.
 
 It does **not** (yet) perform real AI product recognition, real 3D virtual
 try-on, cloth simulation, backend sync, auth, or cloud storage. Phase numbering
-here matches `PLAN.md`.
+here matches `docs/planning/PLAN.md`.
 
 ## Delivered phases
 

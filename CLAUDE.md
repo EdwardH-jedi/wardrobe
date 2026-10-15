@@ -11,7 +11,7 @@ AvatarWardrobe contains two explicitly separated tracks:
 
 - **Track A — Fit Archive closet layer (BUILT).** Everything described in the
   rest of this file: the local-first 2.5D fashion archive (Vite + React, no
-  backend). Phases 1–12.5 are complete per `PLAN.md`.
+  backend). Phases 1–12.5 are complete per `docs/planning/PLAN.md`.
 - **Track B — Avatar Lab (B2–B3.9 done).** A user-authorized, additive track
   toward an optional FastAPI job backend + 3D/GLB avatar try-on pipeline. As
   of 2026-06-10: **B2** — a backend spike in `backend/` (FastAPI, local-only,
@@ -182,7 +182,7 @@ canvas (decode validation is tested via a stubbed `Image`).
 
 ## 8. Roadmap (summary)
 
-See `docs/ROADMAP.md` for detail. Phase numbers match `PLAN.md`.
+See `docs/ROADMAP.md` for detail. Phase numbers match `docs/planning/PLAN.md`.
 
 - **Phases 1–12 (done):** core data flow → clothes central → upload ritual →
   mannequin/mirror preview → saved board → architecture/docs hardening → Codex
@@ -238,9 +238,9 @@ backend/          Track B spike (FastAPI): app/ (main, config, storage,
 
 ## 10. Phase discipline & review
 
-- **`PLAN.md` is the source of truth for Track A.** Read it first; implement
+- **`docs/planning/PLAN.md` is the source of truth for Track A.** Read it first; implement
   only the **next incomplete phase** unless the user says otherwise. After each
-  phase: update PLAN.md status, run typecheck/test/lint/build, and report real
+  phase: update docs/planning/PLAN.md status, run typecheck/test/lint/build, and report real
   output. Track B (avatar lab) phases live in `docs/AVATAR_TRACK.md` and only
   proceed when the user explicitly asks for them.
 - Keep changes **small, incremental, and verified**. Don't rewrite the app.

@@ -8,8 +8,8 @@ downscaled thumbnail to the `api/analyze` Vercel function (a Claude vision call)
 and maps the result via `parseVisionGuess` (`source: 'vision-api'`); any failure
 falls back to the mock. The default (env unset) remains mock-only with no upload.
 
-> **Note on "Phase" numbers — they collide.** PLAN.md's roadmap and this document
-> both say "Phase N" but mean different things. **PLAN.md Phase 3 ("Upload To
+> **Note on "Phase" numbers — they collide.** docs/planning/PLAN.md's roadmap and this document
+> both say "Phase N" but mean different things. **docs/planning/PLAN.md Phase 3 ("Upload To
 > Archive Transition")** is a *UX illusion*: a premium demo-scan → draft-metadata
 > suggestion → "Archive Piece created" → transition ritual layered over the
 > existing **local mock**. It is NOT this document's *future* "Phase 3 (real

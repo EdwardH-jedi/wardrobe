@@ -13,7 +13,7 @@ mirror preview, runs a deterministic Fit Check, and saves looks to an editorial
 board. Everything persists **locally** (IndexedDB → localStorage → memory). There
 is **no backend, no real AI, no real 3D**.
 
-Source of truth for scope/phases: `PLAN.md`. Architecture: `docs/ARCHITECTURE.md`.
+Source of truth for scope/phases: `docs/planning/PLAN.md`. Architecture: `docs/ARCHITECTURE.md`.
 
 ## Implemented phases (all green)
 
@@ -126,7 +126,7 @@ npm run build       # tsc --noEmit && vite build
 > Review the "The Archive" (Fit Archive) repo as an external reviewer. It is a
 > local-only fashion-archive MVP (React 18 + TS strict + Vite; no backend, no real
 > AI, no real 3D — the analyzer is a deterministic mock, the preview is 2.5D).
-> Read `PLAN.md` and `docs/ARCHITECTURE.md` first. Run `npm run typecheck`,
+> Read `docs/planning/PLAN.md` and `docs/ARCHITECTURE.md` first. Run `npm run typecheck`,
 > `npm test`, `npm run lint`, and `npm run build` and confirm they are green. Then
 > check: (1) the MVP flow (upload → demo scan → confirm → archive → select →
 > mannequin/mirror update → save → board → restore → delete-keeps-garments →
