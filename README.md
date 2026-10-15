@@ -9,6 +9,7 @@ suggestions, and a **2.5D layered styling preview**. It needs no account, cloud
 credentials, or backend. Optional vision/product-reference services and the local
 Proxy 3D Lab are separate opt-in paths.
 
+**[Live demo](https://edwardh-jedi.github.io/wardrobe/)** ·
 [Architecture](docs/ARCHITECTURE.md) · [Feature scope](docs/PROJECT_SCOPE.md) ·
 [CI](https://github.com/EdwardH-jedi/wardrobe/actions/workflows/ci.yml) ·
 [Manual QA](docs/QA_CHECKLIST.md)
@@ -141,7 +142,7 @@ run for the exact commit under review.
 
 - [Image pipeline](docs/AI_IMAGE_PIPELINE.md)
 - [Avatar track and limitations](docs/AVATAR_TRACK.md)
-- [Implementation plan](PLAN.md)
+- [Implementation plan](docs/planning/PLAN.md)
 - [Manual QA checklist](docs/QA_CHECKLIST.md)
 
 The project contains experimental and historical phase notes. Treat future items

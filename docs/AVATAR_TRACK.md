@@ -38,7 +38,7 @@ throwaway codebase — and has authorized Track B as a separate, additive track.
 - Track A's test suite must remain green after every Track B change. A Track B
   phase that breaks a Track A test is not done.
 - Track B work happens **only when the user explicitly starts a Track B
-  phase**. Default sessions continue Track A per `PLAN.md`.
+  phase**. Default sessions continue Track A per `docs/planning/PLAN.md`.
 
 ## 3. Intended architecture (target, not current state)
 
@@ -157,7 +157,7 @@ B4–B5._
 
 | Phase | Scope | Status |
 |---|---|---|
-| **B1** | Git baseline + two-track docs (this file; CLAUDE.md §0; PLAN.md tracks note). No code changes. | ✅ Done (2026-06-10) |
+| **B1** | Git baseline + two-track docs (this file; CLAUDE.md §0; docs/planning/PLAN.md tracks note). No code changes. | ✅ Done (2026-06-10) |
 | **B2** | Feasibility spike — PNG → proxy-3D GLB: `backend/` FastAPI service; `POST /api/proxy-3d` (synchronous, job-shaped records persisted to disk) + status/result GETs; alpha-mask extruded silhouette slab or textured-plane fallback; honest `limitations` metadata; 22 pytest tests; sample + verifier scripts. No frontend changes. | ✅ Done (2026-06-10) |
 | **B3** | Frontend Proxy 3D Lab view (additive): upload PNG → call `/api/proxy-3d` → show status/errors + honest generation report → download result.glb; three.js viewer lazy-loaded only inside the view (WebGL-failure fallback, full disposal on unmount); pure job-flow reducer + honesty-guarded copy; Vite dev proxy. Verified in headless Chrome incl. texture orientation. Track A tests stay green (247 total). | ✅ Done (2026-06-10) |
 | **B3.5** | Verification pass: viewer robustness (disposal, multi-upload, navigation), PNG edge matrix, offline UX, preview routing, visual orientation. Two honesty fixes (connectivity error wording + scoped backend hint). | ✅ Done (2026-06-10) |

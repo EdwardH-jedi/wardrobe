@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react'
 // Vite + Vitest configuration.
 // The `test` block is typed via `vitest/config`'s re-exported `defineConfig`.
 export default defineConfig({
+  // Subpath for static hosting (the Pages workflow sets VITE_BASE_PATH=/wardrobe/).
+  base: process.env.VITE_BASE_PATH ?? '/',
   plugins: [react()],
   server: {
     // Dev-only: forward the Track B Proxy 3D Lab API to the local FastAPI

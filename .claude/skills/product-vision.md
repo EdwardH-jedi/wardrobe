@@ -35,6 +35,6 @@ editorial feel, without overbuilding? See `CLAUDE.md` and `docs/` for detail.
 
 ## Working here
 
-`PLAN.md` is the source of truth — read it first, implement only the next
+`docs/planning/PLAN.md` is the source of truth — read it first, implement only the next
 incomplete phase, keep changes small and verified (typecheck/test/lint/build),
 and write code comments in **English**.

@@ -2,7 +2,7 @@
 
 > One-page-deep scope and feature reference for the AvatarWardrobe repository.
 > Status snapshot date: 2026-06-11. For authoritative phase status, always
-> defer to `PLAN.md` (Track A) and `docs/AVATAR_TRACK.md` (Track B).
+> defer to `docs/planning/PLAN.md` (Track A) and `docs/AVATAR_TRACK.md` (Track B).
 
 ---
 
@@ -33,7 +33,7 @@ The repository contains two explicitly separated tracks:
 
 | Track | What it is | Status |
 |---|---|---|
-| **A — Fit Archive closet layer** | The local-first 2.5D fashion archive (Vite + React + TypeScript, no backend, no network calls). | Phases 1–12.5 complete; Phase 13 is next (`PLAN.md`). |
+| **A — Fit Archive closet layer** | The local-first 2.5D fashion archive (Vite + React + TypeScript, no backend, no network calls). | Phases 1–12.5 complete; Phase 13 is next (`docs/planning/PLAN.md`). |
 | **B — Avatar Lab** | An additive, user-authorized track toward an optional FastAPI job backend + 3D/GLB **proxy** avatar pipeline. Explicitly NOT real try-on. | B1–B3.9 complete; B4–B6 not started (`docs/AVATAR_TRACK.md`). |
 
 Track B must never rewrite, rename, or degrade Track A code. Track A's bundle
@@ -177,7 +177,7 @@ Track B backend: see `backend/` (pytest-covered; run locally only).
 
 ## 8. Related documents
 
-- `PLAN.md` — Track A source of truth: phase history, audits, verification.
+- `docs/planning/PLAN.md` — Track A source of truth: phase history, audits, verification.
 - `docs/AVATAR_TRACK.md` — Track B scope, architecture, phase plan.
 - `docs/ARCHITECTURE.md` — layering, state, storage details.
 - `docs/ROADMAP.md` — delivered phases + clearly-labeled future work.
